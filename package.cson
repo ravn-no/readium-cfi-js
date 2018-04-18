@@ -33,11 +33,12 @@
 
 name: "readium-cfi-js"
 
-version: "0.26.0"
+version: "0.30.0"
 
 engines:
-    node: ">=0.12"
-    npm: ">2.10"
+    node: ">=4"
+    npm: ">=2"
+    yarn: ">=0.23"
 
 description: "Readium - CFI javascript library"
 
@@ -92,15 +93,14 @@ files: [
 dependencies:
 
     #"parallelshell": 'latest'
-    "concurrently": 'latest'
+    "concurrently": '^3.5.0'
 
-    "npm-run-all": 'latest'
+    "npm-run-all": '^4.1.2'
 
-
-    "opener": 'latest'
+    "opener": '^1.4.3'
 
     #"http-server": 'latest'
-    "http-server": 'danielweck/http-server'
+    "http-server": 'github:danielweck/http-server#master'
     # SEE: https://github.com/indexzero/http-server/issues/154
 
 
@@ -109,51 +109,51 @@ dependencies:
 # in "npm install --dev readium-cfi-js".
 devDependencies:
 
-    "requirejs": 'latest'
+    "requirejs": '^2.3.5'
 
-    "almond": 'latest'
+    "almond": '^0.3.3'
 
     "jquery": '2.x.x'
 
-    "underscore": 'latest'
+    "underscore": '^1.8.3'
 
 
-    "pegjs": 'latest'
+    "pegjs": '^0.10.0'
 
-    "karma": 'latest'
+    "karma": '^1.7.1'
 
-    "karma-chrome-launcher": 'latest'
-    "karma-firefox-launcher": 'latest'
+    "karma-chrome-launcher": '^2.2.0'
+    "karma-firefox-launcher": '^1.0.1'
 
-    "jasmine-core": 'latest'
+    "jasmine-core": '^2.8.0'
     
-    "karma-jasmine": 'latest'
+    "karma-jasmine": '^1.1.0'
 
-    "karma-sauce-launcher": 'latest'
+    "karma-sauce-launcher": '^1.2.0'
 
 
 # Below dependencies are only used for building tasks (above are runtime deps):
 
-    "cson": 'latest'
+    "cson": '^4.1.0'
 
-    "rimraf": 'latest'
+    "rimraf": '^2.6.2'
 
-    "cpy-cli": 'latest'
+    "cpy-cli": '^1.0.1'
     
-    "ncp": 'latest'
+    "ncp": '^2.0.0'
 
-    "mkdirp": 'latest'
+    "mkdirp": '^0.5.1'
 
-    "watch": 'latest'
+    "watch": '^1.0.2'
 
     #"live-reload": 'latest'
 
     # see readium-build-tools
     # jshint_glob.js
-    "jshint": 'latest'
-    "glob": 'latest'
+    "jshint": '^2.9.5'
+    "glob": '^7.1.2'
 
-    "yuidocjs": 'latest'
+    "yuidocjs": '^0.10.2'
 
 #####################################################################
 scripts:
@@ -167,7 +167,7 @@ scripts:
     '
 
 #=====================
-    'prepare': '
+    'prepare:all': '
 
         npm run
             prepare:local
@@ -176,12 +176,33 @@ scripts:
 #=====================
     'prepare:local': '
 
-        npm outdated
+        (npm outdated || echo outdated)
         &&
         npm install
         &&
-        npm update
+        npm run prepare:local:common
+    '
+
+#=====================
+    'prepare:yarn:all': '
+
+        yarn run
+            prepare:yarn:local
+    '
+
+#=====================
+    'prepare:yarn:local': '
+
+        (yarn outdated || echo outdated)
         &&
+        yarn install
+        &&
+        yarn run prepare:local:common
+    '
+
+#=====================
+    'prepare:local:common': '
+
         node
             readium-build-tools/patchRequireJS.js
         &&
@@ -192,7 +213,9 @@ scripts:
 #=====================
     clean: '
 
-        node --version
+        (yarn --version || echo noyarn)
+        &&
+        node --version 
         &&
         npm --version
         &&
@@ -301,6 +324,7 @@ scripts:
             -OPEN
             /dev/
             
+            -c-1
             -a 127.0.0.1
             -p 9090
             --cors
