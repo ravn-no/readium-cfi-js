@@ -368,8 +368,7 @@ return obj;
 
 
 if (typeof define == 'function' && typeof define.amd == 'object') {
-    console.log("RequireJS ... cfi_instructions");
-    
+
     define(['jquery', 'underscore', './cfi_runtime_errors'],
     function ($, _, cfiRuntimeErrors) {
         return init($, _, cfiRuntimeErrors);
